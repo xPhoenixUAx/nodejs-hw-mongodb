@@ -1,6 +1,7 @@
 import express from "express";
 import pino from "pino-http";
 import cors from "cors";
+import ContactCollection from "./db/models/Contact.js";
 import { getEnVar } from "./utils/getEnVar.js";
 
 const PORT = Number(getEnVar("PORT", "3000"));
@@ -15,6 +16,12 @@ export const setupServer = () => {
       },
     })
   );
+
+  app.get("/contacts", async (req, res) => {
+    const contacts = await ContactCollection.find();
+
+    res.json(contacts);
+  });
 
   app.use((req, res) => {
     res.status(404).json({
