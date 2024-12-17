@@ -1,7 +1,7 @@
 import express from "express";
 import pino from "pino-http";
 import cors from "cors";
-import ContactCollection from "./db/models/Contact.js";
+import * as contactServices from "./services/contacts.js";
 import { getEnVar } from "./utils/getEnVar.js";
 
 const PORT = Number(getEnVar("PORT", "3000"));
@@ -18,9 +18,28 @@ export const setupServer = () => {
   );
 
   app.get("/contacts", async (req, res) => {
-    const contacts = await ContactCollection.find();
+    const data = await contactServices.getGontacts();
 
-    res.json(contacts);
+    res.json({
+      status: 200,
+      message: "Successfully found contacts!",
+      data,
+    });
+  });
+  app.get("/contacts/:id", async (req, res) => {
+    const { id } = req.params;
+    const data = await contactServices.getContactByID(id);
+    if (!data) {
+      return res.status(404).json({
+        status: 404,
+        message: "Contact not found",
+      });
+    }
+    res.json({
+      status: 200,
+      message: "Successfully found contacts!",
+      data,
+    });
   });
 
   app.use((req, res) => {
