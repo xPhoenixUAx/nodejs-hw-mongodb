@@ -1,6 +1,6 @@
 import * as contactServices from "../services/contacts.js";
 export async function getContactsController(req, res) {
-  const data = await contactServices.getGontacts();
+  const data = await contactServices.getContacts();
 
   res.json({
     status: 200,
