@@ -1,5 +1,5 @@
 import express from "express";
-import pino from "pino-http";
+// import pino from "pino-http";
 import cors from "cors";
 import { getEnVar } from "./utils/getEnVar.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
@@ -11,13 +11,13 @@ export const setupServer = () => {
   const app = express();
   app.use(express.json());
   app.use(cors());
-  app.use(
-    pino({
-      transport: {
-        target: "pino-pretty",
-      },
-    })
-  );
+  // app.use(
+  //   pino({
+  //     transport: {
+  //       target: "pino-pretty",
+  //     },
+  //   })
+  // );
   app.use("/api", router);
   app.use(notFoundHandler);
   app.use(errorHandler);
