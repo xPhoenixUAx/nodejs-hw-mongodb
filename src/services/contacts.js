@@ -8,3 +8,12 @@ export function getContacts() {
 export function getContactByID(id) {
   return ContactCollection.findById(id);
 }
+export function createContact(contact) {
+  return ContactCollection.create(contact);
+}
+export function deleteContact(id) {
+  return ContactCollection.findByIdAndDelete(id);
+}
+export function replaceContact(id, contact) {
+  return ContactCollection.findByIdAndUpdate(id, contact);
+}

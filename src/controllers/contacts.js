@@ -25,3 +25,46 @@ export async function getContactByIdController(req, res) {
     data,
   });
 }
+export async function createContactController(req, res) {
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavorite: req.body.isFavorite,
+    contactType: req.body.contactType,
+  };
+  console.log(req.body);
+  const result = await contactServices.createContact(contact);
+  console.log(result);
+  res.status(201).json({
+    status: 201,
+    message: "Successfully created contact!",
+    data: result,
+  });
+}
+
+export async function deleteContactController(req, res) {
+  const { id } = req.params;
+
+  const result = await contactServices.deleteContact(id);
+  if (!result) {
+    throw new createHttpError.NotFound("Contact not found");
+  }
+  res.send({
+    status: 200,
+    message: "Successfully deleted contact!",
+  });
+}
+
+export async function replaceContactController(req, res) {
+  const { id } = req.params;
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavorite: req.body.isFavorite,
+  };
+  const result = await contactServices.replaceContact(id, contact);
+  console.log(result);
+  res.send("OK");
+}

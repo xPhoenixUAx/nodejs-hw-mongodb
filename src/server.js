@@ -9,7 +9,7 @@ import router from "./routers/index.js";
 const PORT = Number(getEnVar("PORT", "3000"));
 export const setupServer = () => {
   const app = express();
-  app.use(express.json());
+  // app.use(express.json());
   app.use(cors());
   // app.use(
   //   pino({
