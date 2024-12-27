@@ -15,4 +15,5 @@ router.get("/:id", ctrlWrapper(getContactByIdController));
 router.post("/", jsonParser, ctrlWrapper(createContactController));
 router.delete("/:id", ctrlWrapper(deleteContactController));
 router.put("/:id", jsonParser, ctrlWrapper(replaceContactController));
+router.patch("/:id", jsonParser, ctrlWrapper(replaceContactController));
 export default router;

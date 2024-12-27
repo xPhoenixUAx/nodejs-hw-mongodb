@@ -15,5 +15,11 @@ export function deleteContact(id) {
   return ContactCollection.findByIdAndDelete(id);
 }
 export function replaceContact(id, contact) {
+  return ContactCollection.findByIdAndUpdate(id, contact, {
+    upsert: true,
+    includeResultMetadata: true,
+  });
+}
+export function patchContact(id, contact) {
   return ContactCollection.findByIdAndUpdate(id, contact);
 }

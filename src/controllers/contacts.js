@@ -66,5 +66,25 @@ export async function replaceContactController(req, res) {
   };
   const result = await contactServices.replaceContact(id, contact);
   console.log(result);
-  res.send("OK");
+  res.send({
+    status: 200,
+    message: "Successfully replaced a contact!",
+    data: result,
+  });
+}
+export async function patchContactController(req, res) {
+  const { id } = req.params;
+  const contact = {
+    name: req.body.name,
+    phoneNumber: req.body.phoneNumber,
+    email: req.body.email,
+    isFavorite: req.body.isFavorite,
+  };
+  const result = await contactServices.patchContact(id, contact);
+  console.log(result);
+  res.send({
+    status: 200,
+    message: "Successfully patched a contact!",
+    data: result,
+  });
 }
