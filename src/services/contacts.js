@@ -14,11 +14,17 @@ export function createContact(contact) {
 export function deleteContact(id) {
   return ContactCollection.findByIdAndDelete(id);
 }
-export function replaceContact(id, contact) {
-  return ContactCollection.findByIdAndUpdate(id, contact, {
+export async function replaceContact(id, contact) {
+  const rawResult = await ContactCollection.findByIdAndUpdate(id, contact, {
+    new: true,
     upsert: true,
     includeResultMetadata: true,
   });
+  if (!rawResult || !rawResult.value) return null;
+  return {
+    contact: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+  };
 }
 export function patchContact(id, contact) {
   return ContactCollection.findByIdAndUpdate(id, contact);

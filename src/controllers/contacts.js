@@ -65,6 +65,16 @@ export async function replaceContactController(req, res) {
     isFavorite: req.body.isFavorite,
   };
   const result = await contactServices.replaceContact(id, contact);
+  if (!result) {
+    throw new createHttpError.NotFound("Contact not found");
+  }
+  if (result.isNew === true) {
+    return res.status(201).json({
+      status: 201,
+      message: "Successfully created a contact!",
+      data: result.contact,
+    });
+  }
   console.log(result);
   res.send({
     status: 200,
