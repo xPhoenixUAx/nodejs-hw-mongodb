@@ -91,6 +91,9 @@ export async function patchContactController(req, res) {
     isFavorite: req.body.isFavorite,
   };
   const result = await contactServices.patchContact(id, contact);
+  if (!result) {
+    throw new createHttpError.NotFound("Contact not found");
+  }
   console.log(result);
   res.send({
     status: 200,

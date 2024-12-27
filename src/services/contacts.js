@@ -27,5 +27,5 @@ export async function replaceContact(id, contact) {
   };
 }
 export function patchContact(id, contact) {
-  return ContactCollection.findByIdAndUpdate(id, contact);
+  return ContactCollection.findByIdAndUpdate(id, contact, { new: true });
 }
