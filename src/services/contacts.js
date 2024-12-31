@@ -2,8 +2,9 @@ import ContactCollection from "../db/models/Contact.js";
 
 // export const getContacts = () => ContactCollection.find();
 // export const getContactByID = (id) => ContactCollection.findById(id);
-export function getContacts() {
-  return ContactCollection.find();
+export function getContacts({ page, perPage }) {
+  const skip = page > 0 ? (page - 1) * perPage : 0;
+  return ContactCollection.find().skip(skip).limit(perPage);
 }
 export function getContactByID(id) {
   return ContactCollection.findById(id);
