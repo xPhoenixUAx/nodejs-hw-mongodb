@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { User } from "../db/models/user.js";
+import { User } from "../db/models/User.js";
 import createError from "http-errors";
 import { Session } from "../db/models/session.js";
 import crypto from "node:crypto";
