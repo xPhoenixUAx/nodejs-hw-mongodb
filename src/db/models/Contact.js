@@ -27,6 +27,10 @@ const contactSchema = new Schema(
       required: true,
       default: "personal",
     },
+    ownerId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -12,6 +12,7 @@ export async function getContactsController(req, res) {
     perPage,
     sortBy,
     sortOrder,
+    ownerId: req.user.id,
   });
 
   res.json({
@@ -30,6 +31,14 @@ export async function getContactByIdController(req, res) {
     //   message: "Contact not found",
     // });
   }
+
+  if (data.ownerId.toString() !== req.user.id) {
+    // throw new createHttpError.Forbidden(
+    //   "You are not allowed to access this contact"
+    // );
+    throw new createHttpError.NotFound("Contact not found");
+  }
+
   res.json({
     status: 200,
     message: "Successfully found contacts!",
@@ -43,6 +52,7 @@ export async function createContactController(req, res) {
     email: req.body.email,
     isFavorite: req.body.isFavorite,
     contactType: req.body.contactType,
+    ownerId: req.user.id,
   };
   console.log(req.body);
   const result = await contactServices.createContact(contact);

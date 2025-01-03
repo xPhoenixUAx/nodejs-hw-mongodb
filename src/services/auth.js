@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { User } from "../db/models/user.js";
 import createError from "http-errors";
+import { Session } from "../db/models/session.js";
+import crypto from "node:crypto";
 
 export async function registerUser(payload) {
   const user = await User.findOne({ email: payload.email });
@@ -25,4 +27,44 @@ export async function loginUser(email, password) {
   if (isMatch !== true) {
     throw createError(401, "Invalid credentials");
   }
+
+  await Session.deleteOne({ userId: user._id });
+
+  return Session.create({
+    userId: user._id,
+    accessToken: crypto.randomBytes(30).toString("base64"),
+    refreshToken: crypto.randomBytes(30).toString("base64"),
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
+}
+
+export async function logoutUser(sessionId) {
+  await Session.deleteOne({ _id: sessionId });
+}
+
+export async function refreshSession(sessionId, refreshToken) {
+  const session = await Session.findById(sessionId);
+
+  if (session === null) {
+    throw createError(401, "Invalid session");
+  }
+
+  if (session.refreshToken !== refreshToken) {
+    throw createError(401, "Invalid session");
+  }
+
+  if (session.refreshTokenValidUntil < new Date()) {
+    throw createError(401, "Session expired");
+  }
+
+  await Session.deleteOne({ _id: session._id });
+
+  return Session.create({
+    userId: session.userId,
+    accessToken: crypto.randomBytes(30).toString("base64"),
+    refreshToken: crypto.randomBytes(30).toString("base64"),
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
 }

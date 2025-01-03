@@ -2,10 +2,16 @@ import ContactCollection from "../db/models/Contact.js";
 
 // export const getContacts = () => ContactCollection.find();
 // export const getContactByID = (id) => ContactCollection.findById(id);
-export async function getContacts({ page, perPage, sortBy, sortOrder }) {
+export async function getContacts({
+  page,
+  perPage,
+  sortBy,
+  sortOrder,
+  ownerId,
+}) {
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
-  const contactQuery = ContactCollection.find();
+  const contactQuery = ContactCollection.find({ ownerId });
   const [total, data] = await Promise.all([
     ContactCollection.countDocuments(contactQuery),
     contactQuery
