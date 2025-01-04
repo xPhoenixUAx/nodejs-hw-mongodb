@@ -26,19 +26,12 @@ export async function getContactByIdController(req, res) {
   const data = await contactServices.getContactByID(id);
   if (!data) {
     throw new createHttpError.NotFound("Contact not found");
-    // return res.status(404).json({
-    //   status: 404,
-    //   message: "Contact not found",
-    // });
   }
-
-  if (data.ownerId.toString() !== req.user.id) {
-    // throw new createHttpError.Forbidden(
-    //   "You are not allowed to access this contact"
-    // );
-    throw new createHttpError.NotFound("Contact not found");
+  if (data.ownerId.toString() !== req.user.id.toString()) {
+    throw new createHttpError.Forbidden(
+      "You are not allowed to access this contact"
+    );
   }
-
   res.json({
     status: 200,
     message: "Successfully found contacts!",
@@ -71,8 +64,8 @@ export async function deleteContactController(req, res) {
   if (!result) {
     throw new createHttpError.NotFound("Contact not found");
   }
-  res.send({
-    status: 200,
+  res.status(204).json({
+    status: 204,
     message: "Successfully deleted contact!",
   });
 }
