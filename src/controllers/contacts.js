@@ -5,17 +5,18 @@ import createHttpError from "http-errors";
 import { parsePaginationParams } from "../utils/parsPaginationParams.js";
 import { parseSortParams } from "../utils/parsSortParams.js";
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
+import { getEnVar } from "../utils/getEnVar.js";
 
 export async function getContactsController(req, res) {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
-  console.log({ sortBy, sortOrder });
+  console.log(req.user);
   const data = await contactServices.getContacts({
     page,
     perPage,
     sortBy,
     sortOrder,
-    ownerId: req.user.id,
+    userId: req.user.id,
   });
 
   res.json({
@@ -26,7 +27,8 @@ export async function getContactsController(req, res) {
 }
 export async function getContactByIdController(req, res) {
   const { id } = req.params;
-  const data = await contactServices.getContactByID(id);
+  const userId = req.user.id;
+  const data = await contactServices.getContactByID(id, userId);
   if (!data) {
     throw new createHttpError.NotFound("Contact not found");
   }
@@ -44,7 +46,7 @@ export async function getContactByIdController(req, res) {
 export async function createContactController(req, res) {
   let avatar = null;
   if (typeof req.file !== "undefined") {
-    if (process.env.ENABLE_CLOUDINARY === "true") {
+    if (getEnVar("ENABLE_CLOUDINARY") === "true") {
       const result = await uploadToCloudinary(req.file.path);
       await fs.unlink(req.file.path);
 
@@ -63,8 +65,8 @@ export async function createContactController(req, res) {
     email: req.body.email,
     isFavorite: req.body.isFavorite,
     contactType: req.body.contactType,
-    ownerId: req.user.id,
-    avatar,
+    userId: req.user.id,
+    photo: avatar,
   };
   console.log(req.body);
   const result = await contactServices.createContact(contact);
@@ -79,7 +81,7 @@ export async function createContactController(req, res) {
 export async function deleteContactController(req, res) {
   const { id } = req.params;
 
-  const result = await contactServices.deleteContact(id);
+  const result = await contactServices.deleteContact(id, req.user.id);
   if (!result) {
     throw new createHttpError.NotFound("Contact not found");
   }
@@ -96,13 +98,14 @@ export async function deleteContactController(req, res) {
 
 export async function replaceContactController(req, res) {
   const { id } = req.params;
+  const userId = req.user.id;
   const contact = {
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
     email: req.body.email,
     isFavorite: req.body.isFavorite,
   };
-  const result = await contactServices.replaceContact(id, contact);
+  const result = await contactServices.replaceContact(id, userId, contact);
   if (!result) {
     throw new createHttpError.NotFound("Contact not found");
   }
@@ -120,13 +123,8 @@ export async function replaceContactController(req, res) {
 }
 export async function patchContactController(req, res) {
   const { id } = req.params;
-  const contact = {
-    name: req.body.name,
-    phoneNumber: req.body.phoneNumber,
-    email: req.body.email,
-    isFavorite: req.body.isFavorite,
-  };
-  const result = await contactServices.patchContact(id, contact);
+  const userId = req.user.id;
+  const result = await contactServices.patchContact(id, userId, req.body);
   if (!result) {
     throw new createHttpError.NotFound("Contact not found");
   }

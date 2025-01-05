@@ -31,7 +31,7 @@ const contactSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
     },
-    avatar: {
+    photo: {
       type: String,
       default: null,
     },
