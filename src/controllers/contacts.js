@@ -1,7 +1,10 @@
+import * as fs from "node:fs/promises";
+import path from "node:path";
 import * as contactServices from "../services/contacts.js";
 import createHttpError from "http-errors";
 import { parsePaginationParams } from "../utils/parsPaginationParams.js";
 import { parseSortParams } from "../utils/parsSortParams.js";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
 
 export async function getContactsController(req, res) {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -39,6 +42,21 @@ export async function getContactByIdController(req, res) {
   });
 }
 export async function createContactController(req, res) {
+  let avatar = null;
+  if (typeof req.file !== "undefined") {
+    if (process.env.ENABLE_CLOUDINARY === "true") {
+      const result = await uploadToCloudinary(req.file.path);
+      await fs.unlink(req.file.path);
+
+      avatar = result.secure_url;
+    } else {
+      await fs.rename(
+        req.file.path,
+        path.resolve("src", "public", "avatars", req.file.filename)
+      );
+      avatar = `http://localhost:3000/avatars/${req.file.filename}`;
+    }
+  }
   const contact = {
     name: req.body.name,
     phoneNumber: req.body.phoneNumber,
@@ -46,6 +64,7 @@ export async function createContactController(req, res) {
     isFavorite: req.body.isFavorite,
     contactType: req.body.contactType,
     ownerId: req.user.id,
+    avatar,
   };
   console.log(req.body);
   const result = await contactServices.createContact(contact);

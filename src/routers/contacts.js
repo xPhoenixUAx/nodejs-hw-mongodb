@@ -7,6 +7,7 @@ import {
   replaceContactController,
   patchContactController,
 } from "../controllers/contacts.js";
+import { upload } from "../middlewares/upload.js";
 import {
   createContactSchema,
   replaceContactSchema,
@@ -21,6 +22,7 @@ router.get("/", ctrlWrapper(getContactsController));
 router.get("/:id", isValidId, ctrlWrapper(getContactByIdController));
 router.post(
   "/",
+  upload.single("avatar"),
   jsonParser,
   validateBody(createContactSchema),
   ctrlWrapper(createContactController)
