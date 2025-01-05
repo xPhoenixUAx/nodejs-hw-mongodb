@@ -5,6 +5,7 @@ import createHttpError from "http-errors";
 import { parsePaginationParams } from "../utils/parsPaginationParams.js";
 import { parseSortParams } from "../utils/parsSortParams.js";
 import { uploadToCloudinary } from "../utils/uploadToCloudinary.js";
+import { getEnVar } from "../utils/getEnVar.js";
 
 export async function getContactsController(req, res) {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -45,7 +46,7 @@ export async function getContactByIdController(req, res) {
 export async function createContactController(req, res) {
   let avatar = null;
   if (typeof req.file !== "undefined") {
-    if (process.env.ENABLE_CLOUDINARY === "true") {
+    if (getEnVar("ENABLE_CLOUDINARY") === "true") {
       const result = await uploadToCloudinary(req.file.path);
       await fs.unlink(req.file.path);
 
@@ -65,6 +66,7 @@ export async function createContactController(req, res) {
     isFavorite: req.body.isFavorite,
     contactType: req.body.contactType,
     userId: req.user.id,
+    photo: avatar,
   };
   console.log(req.body);
   const result = await contactServices.createContact(contact);
