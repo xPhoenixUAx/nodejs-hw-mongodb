@@ -40,6 +40,7 @@
     "nodemailer": "^6.9.16",
     "pino-http": "^10.3.0",
     "pino-pretty": "^13.0.0",
-    "punycode": "^2.3.1"
+    "punycode": "^2.3.1",
+    "swagger-ui-express": "^5.0.1"
   }
 }

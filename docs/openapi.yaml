@@ -20,8 +20,11 @@ paths:
   /contacts/{id}:
     get:
       $ref: ../swagger/paths/contacts/{id}/get.yaml
-  components:
-    securitySchemes:
+  /contacts:
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
+components:
+  securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
