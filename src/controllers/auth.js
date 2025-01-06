@@ -5,6 +5,7 @@ import {
   refreshSession,
   requestResetPassword,
   resetPassword,
+  loginOrRegister,
 } from "../services/auth.js";
 import { generateOAuthURL, validateCode } from "../utils/googleOAuth2.js";
 
@@ -105,6 +106,23 @@ export async function getOAuthURLController(req, res) {
 
 export async function confirmOAuthController(req, res) {
   const { code } = req.body;
-  await validateCode(code);
-  res.send({ status: 200 });
+  const ticket = await validateCode(code);
+  const session = await loginOrRegister(ticket.payload);
+  res.cookie("sessionId", session._id, {
+    httpOnly: true,
+    expire: session.refreshTokenValidUntil,
+  });
+
+  res.cookie("refreshToken", session.refreshToken, {
+    httpOnly: true,
+    expire: session.refreshTokenValidUntil,
+  });
+
+  res.send({
+    status: 200,
+    message: "Login with Google succesfully",
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 }

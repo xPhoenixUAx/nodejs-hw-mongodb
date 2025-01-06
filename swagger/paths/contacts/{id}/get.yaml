@@ -1,0 +1,14 @@
+tags:
+  - Contacts
+summary: Get contact by id
+operationId: getContact
+description: Get contact by id
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: 677be2d3de4d6cfa62b70060
