@@ -13,8 +13,10 @@ import {
   refreshController,
   requestResetPasswordController,
   resetPasswordController,
+  getOAuthURLController,
 } from "../controllers/auth.js";
 import { ctrlWrapper } from "../utils/ctrlWrapper.js";
+// import { generateOAuthURL } from "../utils/googleOAuth2.js";
 
 const router = express.Router();
 const jsonParser = express.json();
@@ -50,5 +52,7 @@ router.post(
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController)
 );
+
+router.get("/get-oauth-url", ctrlWrapper(getOAuthURLController));
 
 export default router;
