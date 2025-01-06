@@ -7,11 +7,11 @@ required:
   - userId
 properties:
   _id:
-    description: "Student's id"
+    description: "Contact's id"
     type: string
     example: 65e4decdd286b30065d54af9
   name:
-    description: "Student's name"
+    description: "Contact's name"
     type: string
     example: "John Doe"
   phoneNumber:
@@ -21,12 +21,12 @@ properties:
   email:
     description: "Contact's email"
     example: name@example.com
-  isFavorite:
-    description: "Favorite contact"
+  isFavourite:
+    description: "Favourite contact"
     type: boolean
     example: false
   contactType:
-    description: "Student's contact type"
+    description: "Contact's contact type"
     type: string
     enum: ["work", "home", "personal"]
   userId:

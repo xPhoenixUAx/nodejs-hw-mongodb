@@ -16,8 +16,7 @@ const swaggerDocument = JSON.parse(
 const PORT = Number(getEnVar("PORT", "3000"));
 export const setupServer = () => {
   const app = express();
-  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
-  app.use("/avatars", express.static(path.resolve("src/public/avatars")));
+
   // app.use(express.json());
   app.use(cors());
   app.use(cookieParser());
@@ -28,6 +27,8 @@ export const setupServer = () => {
   //     },
   //   })
   // );
+  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+  app.use("/avatars", express.static(path.resolve("src/public/avatars")));
   app.use(router);
   app.use(notFoundHandler);
   app.use(errorHandler);
