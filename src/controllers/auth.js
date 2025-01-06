@@ -6,7 +6,7 @@ import {
   requestResetPassword,
   resetPassword,
 } from "../services/auth.js";
-import { generateOAuthURL } from "../utils/googleOAuth2.js";
+import { generateOAuthURL, validateCode } from "../utils/googleOAuth2.js";
 
 export async function registerController(req, res) {
   const payload = {
@@ -99,6 +99,12 @@ export async function getOAuthURLController(req, res) {
   res.send({
     status: 200,
     message: "Successfully get Google OAuth URL",
-    date: url,
+    data: url,
   });
+}
+
+export async function confirmOAuthController(req, res) {
+  const { code } = req.body;
+  await validateCode(code);
+  res.send({ status: 200 });
 }
